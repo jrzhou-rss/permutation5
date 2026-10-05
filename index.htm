@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排列互動學習 | 數學基礎教學</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f0f9ff;
+            --bg-secondary: #e0f2fe;
+            --bg-card: #ffffff;
+            --text-primary: #0c4a6e;
+            --text-secondary: #075985;
+            --accent-1: #0ea5e9;
+            --accent-2: #f59e0b;
+            --accent-3: #10b981;
+            --accent-4: #ef4444;
+            --shadow: rgba(14, 165, 233, 0.15);
+            --border: #bae6fd;
+        }
+
+        .dark {
+            --bg-primary: #0c1e2e;
+            --bg-secondary: #1a3a52;
+            --bg-card: #1e3a52;
+            --text-primary: #e0f2fe;
+            --text-secondary: #bae6fd;
+            --accent-1: #38bdf8;
+            --accent-2: #fbbf24;
+            --accent-3: #34d399;
+            --accent-4: #f87171;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --border: #1e3a52;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease;
+        }
+
+        h1 {
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 700;
+            color: var(--accent-1);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px var(--shadow);
+        }
+
+        .subtitle {
+            font-size: clamp(14px, 3vw, 18px);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeIn 0.8s ease 0.2s backwards;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 18px 30px;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+            border: 3px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white;
+            border-color: var(--accent-1);
+            transform: scale(1.05);
+        }
+
+        /* Activity Sections */
+        .activity {
+            display: none;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .activity.active {
+            display: block;
+        }
+
+        .activity-card {
+            background: var(--bg-card);
+            border-radius: 25px;
+            padding: clamp(20px, 4vw, 40px);
+            box-shadow: 0 10px 40px var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .activity-title {
+            font-size: clamp(20px, 4vw, 32px);
+            font-weight: 700;
+            color: var(--accent-1);
+            margin-bottom: 20px;
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+        }
+
+        .instruction {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            font-size: clamp(16px, 3vw, 20px);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Activity 1: Card Arrangement */
+        .cards-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            width: 100px;
+            height: 140px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            cursor: grab;
+            box-shadow: 0 6px 20px var(--shadow);
+            transition: all 0.3s ease;
+            user-select: none;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotate(5deg);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .card.grabbed {
+            cursor: grabbing;
+            opacity: 0.7;
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .card.placed {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .card[data-color="A"] { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .card[data-color="B"] { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .card[data-color="C"] { background: linear-gradient(135deg, #10b981, #059669); }
+        .card[data-color="D"] { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .card[data-color="1"] { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .card[data-color="2"] { background: linear-gradient(135deg, #ec4899, #db2777); }
+
+        .positions-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .position {
+            width: 100px;
+            height: 140px;
+            border: 4px dashed var(--accent-1);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .position.highlight {
+            border-color: var(--accent-2);
+            background: var(--accent-2);
+            opacity: 0.3;
+            transform: scale(1.1);
+            animation: pulse 1s infinite;
+        }
+
+        .position-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        .position-number {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: var(--accent-4);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 900;
+            box-shadow: 0 3px 10px rgba(239, 68, 68, 0.4);
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Calculation Display */
+        .calculation {
+            text-align: center;
+            font-size: clamp(24px, 5vw, 48px);
+            font-weight: 900;
+            color: var(--accent-1);
+            margin: 30px 0;
+            font-family: 'Fredoka', sans-serif;
+            letter-spacing: 3px;
+        }
+
+        .calculation .operator {
+            color: var(--accent-2);
+            margin: 0 10px;
+        }
+
+        .calculation .result {
+            color: var(--accent-3);
+            display: inline-block;
+            animation: bounce 0.6s ease;
+        }
+
+        /* Activity 2: Role Selection */
+        .candidates-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .candidate {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 900;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s ease;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .candidate:hover:not(.selected) {
+            transform: scale(1.15);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .candidate.selected {
+            opacity: 0.3;
+            pointer-events: none;
+            filter: grayscale(100%);
+        }
+
+        .roles-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .role-card {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 25px;
+            min-width: 180px;
+            text-align: center;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 3px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .role-card.active {
+            border-color: var(--accent-2);
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+            transform: scale(1.05);
+        }
+
+        .role-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+        }
+
+        .role-card.active .role-title {
+            color: white;
+        }
+
+        .role-selection {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--accent-1);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .role-card.active .role-selection {
+            color: white;
+            animation: popIn 0.4s ease;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow);
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+            margin: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 2px solid var(--accent-1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        /* Practice Section */
+        .practice-input {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        .practice-input input {
+            width: 100px;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            border: 3px solid var(--accent-1);
+            border-radius: 12px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .practice-input label {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, var(--accent-3), #34d399);
+            color: white;
+            animation: bounceIn 0.6s ease;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, var(--accent-4), #f87171);
+            color: white;
+            animation: shake 0.5s ease;
+        }
+
+        /* Step Indicator */
+        .step-indicator {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-2);
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            border-left: 5px solid var(--accent-2);
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 25px;
+            max-width: 500px;
+            margin: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: popIn 0.4s ease;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-1);
+            margin-bottom: 20px;
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+        }
+
+        .modal-body {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Permutation Notation */
+        .perm-notation {
+            display: inline-block;
+            position: relative;
+            font-family: 'Fredoka', serif;
+            font-style: italic;
+            margin: 0 5px;
+        }
+
+        .perm-notation .base {
+            font-size: 1em;
+        }
+
+        .perm-notation .superscript {
+            position: absolute;
+            top: -0.5em;
+            left: 1em;
+            font-size: 0.7em;
+        }
+
+        .perm-notation .subscript {
+            position: absolute;
+            bottom: -0.3em;
+            left: 1em;
+            font-size: 0.7em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .card, .position {
+                width: 70px;
+                height: 100px;
+            }
+
+            .card {
+                font-size: 36px;
+            }
+
+            .candidate {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            .role-card {
+                min-width: 140px;
+                padding: 20px;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            html {
+                color-scheme: dark;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎲 排列互動學習</h1>
+            <div class="subtitle">透過動手操作，輕鬆理解排列概念</div>
+        </header>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('activity1')">活動一</button>
+            <button class="tab-btn" onclick="switchTab('activity2')">活動二</button>
+            <button class="tab-btn" onclick="switchTab('activity3')">活動三</button>
+        </div>
+
+        <!-- Activity 1: Full Permutation -->
+        <div id="activity1" class="activity active">
+            <div class="activity-card">
+                <div class="instruction" id="instruction1">
+                    將 <span id="cardCountText">3</span> 張卡片排到 <span id="posCountText">3</span> 個位置，有多少種排法？
+                </div>
+
+                <div style="text-align: center; margin: 25px 0;">
+                    <label style="font-size: 20px; font-weight: 700; color: var(--text-secondary); margin-right: 15px;">選擇卡片數量：</label>
+                    <select id="cardCountSelector" onchange="changeCardCount()" style="padding: 12px 20px; font-size: 18px; font-weight: 700; border: 3px solid var(--accent-1); border-radius: 12px; background: var(--bg-card); color: var(--text-primary); font-family: 'Fredoka', 'Noto Sans TC', sans-serif; cursor: pointer;">
+                        <option value="3" selected>3 張 (A, B, C)</option>
+                        <option value="4">4 張 (A, B, C, D)</option>
+                        <option value="5">5 張 (A, B, C, D, 1)</option>
+                        <option value="6">6 張 (A, B, C, D, 1, 2)</option>
+                    </select>
+                </div>
+
+                <div class="step-indicator" id="step1">
+                    步驟 <span id="currentStep1">1</span> / <span id="totalSteps1">3</span>：選擇卡片放到位置 <span id="currentPos1">1</span>
+                </div>
+
+                <div class="cards-container" id="cardsContainer">
+                    <div class="card" data-color="A" draggable="true">A</div>
+                    <div class="card" data-color="B" draggable="true">B</div>
+                    <div class="card" data-color="C" draggable="true">C</div>
+                </div>
+
+                <div class="positions-container" id="positionsContainer">
+                    <div class="position" data-position="1">
+                        <div class="position-label">位置 1</div>
+                    </div>
+                    <div class="position" data-position="2">
+                        <div class="position-label">位置 2</div>
+                    </div>
+                    <div class="position" data-position="3">
+                        <div class="position-label">位置 3</div>
+                    </div>
+                </div>
+
+                <div class="calculation" id="calculation1">
+                    <span id="calc1Display"></span>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="resetActivity1()">重新開始</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity 2: Partial Permutation -->
+        <div id="activity2" class="activity">
+            <div class="activity-card">
+                <div style="text-align: center; margin: 25px 0;">
+                    <label style="font-size: 20px; font-weight: 700; color: var(--text-secondary); margin-right: 15px;">選擇情境：</label>
+                    <select id="scenarioSelector" onchange="changeScenario()" style="padding: 12px 20px; font-size: 18px; font-weight: 700; border: 3px solid var(--accent-1); border-radius: 12px; background: var(--bg-card); color: var(--text-primary); font-family: 'Fredoka', 'Noto Sans TC', sans-serif; cursor: pointer;">
+                        <option value="0" selected>情境1：卡片排列</option>
+                        <option value="1">情境2：課程排課</option>
+                        <option value="2">情境3：班級幹部</option>
+                    </select>
+                </div>
+
+                <div class="instruction" id="instruction2">
+                    從 7 位同學中選出 3 位擔任不同職位（班長、副班長、風紀），有多少種選法？
+                </div>
+
+                <div class="step-indicator" id="step2">
+                    步驟 <span id="currentStep2">1</span> / 3：選擇 <span id="currentRole">班長</span>
+                </div>
+
+                <div class="candidates-container" id="candidatesContainer">
+                    <div class="candidate" data-id="1">1</div>
+                    <div class="candidate" data-id="2">2</div>
+                    <div class="candidate" data-id="3">3</div>
+                    <div class="candidate" data-id="4">4</div>
+                    <div class="candidate" data-id="5">5</div>
+                    <div class="candidate" data-id="6">6</div>
+                    <div class="candidate" data-id="7">7</div>
+                </div>
+
+                <div class="roles-container" id="rolesContainer">
+                    <div class="role-card" id="role1">
+                        <div class="role-title" id="roleTitle1">班長</div>
+                        <div class="role-selection" id="roleSelect1">?</div>
+                    </div>
+                    <div class="role-card" id="role2">
+                        <div class="role-title" id="roleTitle2">副班長</div>
+                        <div class="role-selection" id="roleSelect2">?</div>
+                    </div>
+                    <div class="role-card" id="role3">
+                        <div class="role-title" id="roleTitle3">風紀</div>
+                        <div class="role-selection" id="roleSelect3">?</div>
+                    </div>
+                </div>
+
+                <div class="calculation" id="calculation2">
+                    <span id="calc2Display"></span>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="resetActivity2()">重新開始</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity 3: Constrained Permutation -->
+        <div id="activity3" class="activity">
+            <div class="activity-card">
+                <div style="text-align: center; margin: 25px 0;">
+                    <label style="font-size: 20px; font-weight: 700; color: var(--text-secondary); margin-right: 15px;">選擇情境：</label>
+                    <select id="scenario3Selector" onchange="changeScenario3()" style="padding: 12px 20px; font-size: 18px; font-weight: 700; border: 3px solid var(--accent-1); border-radius: 12px; background: var(--bg-card); color: var(--text-primary); font-family: 'Fredoka', 'Noto Sans TC', sans-serif; cursor: pointer;">
+                        <option value="0" selected>情境1：VIP專座</option>
+                        <option value="1">情境2：強力膠小隊</option>
+                        <option value="2">情境3：保持距離</option>
+                    </select>
+                </div>
+
+                <div class="instruction" id="instruction3">
+                    某電影院有 5 個座位，小明必須坐在中間位置（座位 3），其餘 4 位朋友可坐在其他位置，有多少種坐法？
+                </div>
+
+                <div class="candidates-container" id="candidates3Container">
+                    <div class="candidate" data-id="1">A</div>
+                    <div class="candidate" data-id="2">B</div>
+                    <div class="candidate" data-id="3">C</div>
+                    <div class="candidate" data-id="4">D</div>
+                    <div class="candidate" data-id="5" style="background: linear-gradient(135deg, #f59e0b, #d97706);">明</div>
+                </div>
+
+                <div class="positions-container" id="positions3Container">
+                    <div class="position" data-position="1">
+                        <div class="position-label">座位 1</div>
+                    </div>
+                    <div class="position" data-position="2">
+                        <div class="position-label">座位 2</div>
+                    </div>
+                    <div class="position" data-position="3" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                        <div class="position-label">座位 3</div>
+                    </div>
+                    <div class="position" data-position="4">
+                        <div class="position-label">座位 4</div>
+                    </div>
+                    <div class="position" data-position="5">
+                        <div class="position-label">座位 5</div>
+                    </div>
+                </div>
+
+                <div class="calculation" id="calculation3">
+                    <span id="calc3Display"></span>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="checkAnswer3Btn" onclick="checkAnswer3()" style="display: none;">查看答案</button>
+                    <button class="btn btn-secondary" onclick="resetActivity3()">重新開始</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">恭喜！</div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="closeModal()">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode support
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Helper function to create permutation notation
+        function permNotation(n, r) {
+            // Ensure n and r are strings and properly escaped
+            const nStr = String(n);
+            const rStr = String(r);
+            return '<span class="perm-notation"><span class="base">P</span><span class="superscript">' + nStr + '</span><span class="subscript">' + rStr + '</span></span>';
+        }
+
+        // Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.activity').forEach(activity => {
+                activity.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Activity 1: Full Permutation
+        let activity1State = {
+            currentPosition: 0,
+            placedCards: [],
+            calculations: [],
+            cardCount: 3
+        };
+
+        const cardLabels = ['A', 'B', 'C', 'D', '1', '2'];
+
+        function initActivity1() {
+            const cards = document.querySelectorAll('.card');
+            const positions = document.querySelectorAll('.position');
+
+            // Highlight first position
+            if (positions.length > 0 && positions[0]) {
+                positions[0].classList.add('highlight');
+            }
+
+            cards.forEach(card => {
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('click', handleCardClick);
+            });
+
+            positions.forEach(position => {
+                position.addEventListener('dragover', handleDragOver);
+                position.addEventListener('drop', handleDrop);
+                position.addEventListener('click', handlePositionClick);
+            });
+        }
+
+        let draggedCard = null;
+        let selectedCard = null;
+
+        function handleDragStart(e) {
+            if (activity1State.currentPosition >= activity1State.cardCount) return;
+            draggedCard = e.target;
+            e.target.classList.add('grabbed');
+        }
+
+        function handleCardClick(e) {
+            if (activity1State.currentPosition >= activity1State.cardCount) return;
+            if (e.target.classList.contains('placed')) return;
+
+            // Clear previous selection
+            document.querySelectorAll('.card').forEach(c => {
+                c.style.border = 'none';
+            });
+
+            selectedCard = e.target;
+            e.target.style.border = '4px solid var(--accent-2)';
+        }
+
+        function handlePositionClick(e) {
+            const position = e.target.closest('.position');
+            if (!position) return;
+            if (position.querySelector('.card')) return;
+            if (!selectedCard) return;
+
+            const positionIndex = parseInt(position.dataset.position) - 1;
+            if (positionIndex !== activity1State.currentPosition) return;
+
+            placeCard(selectedCard, position);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const position = e.target.closest('.position');
+            if (!position) return;
+            if (!draggedCard) return;
+            if (position.querySelector('.card')) return;
+
+            const positionIndex = parseInt(position.dataset.position) - 1;
+            if (positionIndex !== activity1State.currentPosition) return;
+
+            placeCard(draggedCard, position);
+        }
+
+        function placeCard(card, position) {
+            const positionIndex = parseInt(position.dataset.position) - 1;
+            const cardColor = card.dataset.color;
+
+            // Mark card as placed
+            card.classList.add('placed');
+            card.classList.remove('grabbed');
+            card.style.border = 'none';
+
+            // Create a clone in the position
+            const clone = card.cloneNode(true);
+            clone.style.margin = '0';
+            clone.style.cursor = 'default';
+            clone.draggable = false;
+            position.querySelector('.position-label').before(clone);
+
+            // Update state
+            activity1State.placedCards.push(cardColor);
+            const remainingCards = activity1State.cardCount - activity1State.currentPosition - 1;
+            activity1State.calculations.push(remainingCards + 1);
+
+            // Update calculation display
+            updateCalculation1();
+
+            // Move to next position
+            activity1State.currentPosition++;
+
+            // Clear selection
+            selectedCard = null;
+            draggedCard = null;
+
+            // Update UI
+            if (activity1State.currentPosition < activity1State.cardCount) {
+                document.querySelectorAll('.position').forEach(p => p.classList.remove('highlight'));
+                const positions = document.querySelectorAll('.position');
+                if (positions[activity1State.currentPosition]) {
+                    positions[activity1State.currentPosition].classList.add('highlight');
+                }
+
+                const currentStep1 = document.getElementById('currentStep1');
+                if (currentStep1) currentStep1.textContent = activity1State.currentPosition + 1;
+
+                const currentPos1 = document.getElementById('currentPos1');
+                if (currentPos1) currentPos1.textContent = activity1State.currentPosition + 1;
+            } else {
+                const n = activity1State.cardCount;
+                const result = activity1State.calculations.reduce((a, b) => a * b, 1);
+                const calcStr = activity1State.calculations.join(' × ');
+                document.querySelectorAll('.position').forEach(p => p.classList.remove('highlight'));
+
+                const step1 = document.getElementById('step1');
+                if (step1) step1.innerHTML = `✅ 完成！${n} 張卡片的全排列 = ${n}! = ${result} 種`;
+
+                showModal('太棒了！', `
+                    你已經完成 ${n} 張卡片的全排列！<br><br>
+                    <strong>${n}! = ${calcStr} = ${result}</strong><br><br>
+                    這表示 ${n} 張卡片排到 ${n} 個位置，共有 <strong>${result} 種</strong>不同的排法。
+                `);
+            }
+        }
+
+        function updateCalculation1() {
+            const display = document.getElementById('calc1Display');
+            if (!display) return;
+
+            if (activity1State.calculations.length === 0) {
+                // No calculation to show yet
+                display.innerHTML = '';
+            } else if (activity1State.calculations.length === activity1State.cardCount) {
+                // Show complete calculation with result
+                const n = activity1State.cardCount;
+                const calcStr = activity1State.calculations.join(' <span class="operator">×</span> ');
+                const result = activity1State.calculations.reduce((a, b) => a * b, 1);
+                const html = `${n}! <span class="operator">=</span> ${calcStr} <span class="operator">=</span> <span class="result">${result}</span>`;
+                display.innerHTML = html;
+            } else {
+                // Show partial calculation (numbers placed so far)
+                const calcStr = activity1State.calculations.join(' <span class="operator">×</span> ');
+                display.innerHTML = calcStr;
+            }
+        }
+
+        function changeCardCount() {
+            const newCount = parseInt(document.getElementById('cardCountSelector').value);
+            activity1State.cardCount = newCount;
+            resetActivity1();
+        }
+
+        function resetActivity1() {
+            const n = activity1State.cardCount;
+
+            activity1State = {
+                currentPosition: 0,
+                placedCards: [],
+                calculations: [],
+                cardCount: n
+            };
+
+            // Update text displays
+            const cardCountText = document.getElementById('cardCountText');
+            if (cardCountText) cardCountText.textContent = n;
+
+            const posCountText = document.getElementById('posCountText');
+            if (posCountText) posCountText.textContent = n;
+
+            const totalSteps1 = document.getElementById('totalSteps1');
+            if (totalSteps1) totalSteps1.textContent = n;
+
+            const currentStep1 = document.getElementById('currentStep1');
+            if (currentStep1) currentStep1.textContent = 1;
+
+            const currentPos1 = document.getElementById('currentPos1');
+            if (currentPos1) currentPos1.textContent = 1;
+
+            // Generate cards HTML
+            let cardsHTML = '';
+            for (let i = 0; i < n; i++) {
+                cardsHTML += `<div class="card" data-color="${cardLabels[i]}" draggable="true">${cardLabels[i]}</div>`;
+            }
+            const cardsContainer = document.getElementById('cardsContainer');
+            if (cardsContainer) cardsContainer.innerHTML = cardsHTML;
+
+            // Generate positions HTML
+            let positionsHTML = '';
+            for (let i = 0; i < n; i++) {
+                positionsHTML += `
+                    <div class="position" data-position="${i + 1}">
+                        <div class="position-label">位置 ${i + 1}</div>
+                    </div>
+                `;
+            }
+            const positionsContainer = document.getElementById('positionsContainer');
+            if (positionsContainer) positionsContainer.innerHTML = positionsHTML;
+
+            // Clear calculation display
+            const calc1Display = document.getElementById('calc1Display');
+            if (calc1Display) calc1Display.innerHTML = '';
+
+            // Update step indicator
+            const step1 = document.getElementById('step1');
+            if (step1) step1.innerHTML = `步驟 <span id="currentStep1">1</span> / <span id="totalSteps1">${n}</span>：選擇卡片放到位置 <span id="currentPos1">1</span>`;
+
+            selectedCard = null;
+            draggedCard = null;
+            initActivity1();
+        }
+
+        // Activity 2: Partial Permutation
+        const scenarios = [
+            {
+                title: '從 5 張卡片中選出 3 張排到 3 個位置，有多少種排法？',
+                n: 5,
+                r: 3,
+                roles: ['位置 1', '位置 2', '位置 3'],
+                candidateLabel: '卡片',
+                candidateIcon: (id) => String.fromCharCode(64 + id), // A, B, C, D, E
+                type: 'card' // Use card-based display like Activity 1
+            },
+            {
+                title: '從 6 門課程中選出 4 門排入課表的第 1-4 節，有多少種排法？',
+                n: 6,
+                r: 4,
+                roles: ['第 1 節', '第 2 節', '第 3 節', '第 4 節'],
+                candidateLabel: '課程',
+                candidateIcon: (id) => ['中', '英', '數', '體', '公', '史'][id - 1],
+                type: 'role' // Use role-based display (candidates + role cards)
+            },
+            {
+                title: '從 7 位同學中選出 5 位擔任不同職位（班長、副班長、風紀、環保大使、午膳長），有多���種選法？',
+                n: 7,
+                r: 5,
+                roles: ['班長', '副班長', '風紀', '環保大使', '午膳長'],
+                candidateLabel: '同學',
+                candidateIcon: (id) => String.fromCharCode(64 + id), // A, B, C, D, E, F, G
+                type: 'role' // Use role-based display (candidates + role cards)
+            }
+        ];
+
+        let activity2State = {
+            currentRole: 0,
+            selectedCandidates: [],
+            scenarioIndex: 0
+        };
+
+        function initActivity2() {
+            const scenario = scenarios[activity2State.scenarioIndex];
+
+            if (scenario.type === 'card') {
+                // Card-based interaction (like Activity 1)
+                const cards = document.querySelectorAll('#activity2 .card');
+                const positions = document.querySelectorAll('#activity2 .position');
+
+                // Highlight first position
+                if (positions.length > 0 && positions[0]) {
+                    positions[0].classList.add('highlight');
+                }
+
+                cards.forEach(card => {
+                    card.addEventListener('dragstart', handleCard2DragStart);
+                    card.addEventListener('click', handleCard2Click);
+                });
+
+                positions.forEach(position => {
+                    position.addEventListener('dragover', handlePosition2DragOver);
+                    position.addEventListener('drop', handlePosition2Drop);
+                    position.addEventListener('click', handlePosition2Click);
+                });
+            } else {
+                // Role-based interaction (original)
+                const candidates = document.querySelectorAll('.candidate');
+                candidates.forEach(candidate => {
+                    candidate.addEventListener('click', handleCandidateClick);
+                });
+
+                // Highlight first role if it exists
+                const firstRole = document.getElementById('role1');
+                if (firstRole) {
+                    firstRole.classList.add('active');
+                }
+            }
+        }
+
+        // Activity 2 Card Mode Handlers
+        let draggedCard2 = null;
+        let selectedCard2 = null;
+
+        function handleCard2DragStart(e) {
+            const scenario = scenarios[activity2State.scenarioIndex];
+            if (activity2State.currentRole >= scenario.r) return;
+            draggedCard2 = e.target;
+            e.target.classList.add('grabbed');
+        }
+
+        function handleCard2Click(e) {
+            const scenario = scenarios[activity2State.scenarioIndex];
+            if (activity2State.currentRole >= scenario.r) return;
+            if (e.target.classList.contains('placed')) return;
+
+            // Clear previous selection
+            document.querySelectorAll('#activity2 .card').forEach(c => {
+                c.style.border = 'none';
+            });
+
+            selectedCard2 = e.target;
+            e.target.style.border = '4px solid var(--accent-2)';
+        }
+
+        function handlePosition2Click(e) {
+            const position = e.target.closest('.position');
+            if (!position) return;
+            if (position.querySelector('.card')) return;
+            if (!selectedCard2) return;
+
+            const positionIndex = parseInt(position.dataset.position) - 1;
+            if (positionIndex !== activity2State.currentRole) return;
+
+            placeCard2(selectedCard2, position);
+        }
+
+        function handlePosition2DragOver(e) {
+            e.preventDefault();
+        }
+
+        function handlePosition2Drop(e) {
+            e.preventDefault();
+            const position = e.target.closest('.position');
+            if (!position) return;
+            if (!draggedCard2) return;
+            if (position.querySelector('.card')) return;
+
+            const positionIndex = parseInt(position.dataset.position) - 1;
+            if (positionIndex !== activity2State.currentRole) return;
+
+            placeCard2(draggedCard2, position);
+        }
+
+        function placeCard2(card, position) {
+            const scenario = scenarios[activity2State.scenarioIndex];
+            const cardId = card.dataset.id;
+            const cardDisplay = card.textContent;
+
+            // Mark card as placed
+            card.classList.add('placed');
+            card.classList.remove('grabbed');
+            card.style.border = 'none';
+
+            // Create a clone in the position
+            const clone = card.cloneNode(true);
+            clone.style.margin = '0';
+            clone.style.cursor = 'default';
+            clone.draggable = false;
+            position.querySelector('.position-label').before(clone);
+
+            // Update state
+            activity2State.selectedCandidates.push(cardId);
+
+            // Update calculation
+            updateCalculation2();
+
+            // Move to next position
+            activity2State.currentRole++;
+
+            // Clear selection
+            selectedCard2 = null;
+            draggedCard2 = null;
+
+            // Update UI
+            if (activity2State.currentRole < scenario.r) {
+                document.querySelectorAll('#activity2 .position').forEach(p => p.classList.remove('highlight'));
+                const positions = document.querySelectorAll('#activity2 .position');
+                if (positions[activity2State.currentRole]) {
+                    positions[activity2State.currentRole].classList.add('highlight');
+                }
+
+                const currentStep2 = document.getElementById('currentStep2');
+                if (currentStep2) currentStep2.textContent = activity2State.currentRole + 1;
+
+                const currentRole = document.getElementById('currentRole');
+                if (currentRole) currentRole.textContent = scenario.roles[activity2State.currentRole];
+            } else {
+                // Calculate result
+                let result = 1;
+                const nums = [];
+                for (let i = 0; i < scenario.r; i++) {
+                    nums.push(scenario.n - i);
+                    result *= (scenario.n - i);
+                }
+                const calcStr = nums.join(' × ');
+
+                document.querySelectorAll('#activity2 .position').forEach(p => p.classList.remove('highlight'));
+
+                const step2Element = document.getElementById('step2');
+                if (step2Element) {
+                    if (scenario.type === 'card') {
+                        // For card type (scenario 1), don't show P notation
+                        step2Element.innerHTML = `✅ 完成！${calcStr} = ${result} 種`;
+                    } else {
+                        step2Element.innerHTML = `✅ 完成！${permNotation(scenario.n, scenario.r)} = ${calcStr} = ${result} 種`;
+                    }
+                }
+
+                if (scenario.type === 'card') {
+                    // For card type (scenario 1), simpler modal
+                    showModal('太棒了！', `
+                        你已經完成這個情境！<br><br>
+                        <strong>${calcStr} = ${result}</strong><br><br>
+                        共有 <strong>${result} 種</strong>不同的排法。
+                    `);
+                } else {
+                    showModal('太棒了！', `
+                        你已經完成這個情境！<br><br>
+                        <strong>${permNotation(scenario.n, scenario.r)} = ${calcStr} = ${result}</strong><br><br>
+                        共有 <strong>${result} 種</strong>不同的排法。<br><br>
+                        記住：${permNotation('n', 'r')} 就是從 n 開始，連續乘 r 個數字！
+                    `);
+                }
+            }
+        }
+
+        function handleCandidateClick(e) {
+            const scenario = scenarios[activity2State.scenarioIndex];
+            if (activity2State.currentRole >= scenario.r) return;
+            if (e.target.classList.contains('selected')) return;
+
+            const candidateId = e.target.dataset.id;
+            const displayText = e.target.textContent;
+
+            // Mark candidate as selected
+            e.target.classList.add('selected');
+
+            // Update role display
+            const roleIndex = activity2State.currentRole + 1;
+            document.getElementById('roleSelect' + roleIndex).textContent = displayText;
+
+            // Update state
+            activity2State.selectedCandidates.push(candidateId);
+
+            // Update calculation
+            updateCalculation2();
+
+            // Move to next role
+            activity2State.currentRole++;
+
+            // Update UI
+            if (activity2State.currentRole < scenario.r) {
+                document.querySelectorAll('.role-card').forEach(r => r.classList.remove('active'));
+                const nextRole = document.getElementById('role' + (activity2State.currentRole + 1));
+                if (nextRole) nextRole.classList.add('active');
+
+                const currentStep2 = document.getElementById('currentStep2');
+                if (currentStep2) currentStep2.textContent = activity2State.currentRole + 1;
+
+                const currentRole = document.getElementById('currentRole');
+                if (currentRole) currentRole.textContent = scenario.roles[activity2State.currentRole];
+            } else {
+                // Calculate result
+                let result = 1;
+                const nums = [];
+                for (let i = 0; i < scenario.r; i++) {
+                    nums.push(scenario.n - i);
+                    result *= (scenario.n - i);
+                }
+                const calcStr = nums.join(' × ');
+
+                document.querySelectorAll('.role-card').forEach(r => r.classList.remove('active'));
+
+                const step2Element = document.getElementById('step2');
+                if (step2Element) {
+                    step2Element.innerHTML = `✅ 完成！${permNotation(scenario.n, scenario.r)} = ${calcStr} = ${result} 種`;
+                }
+
+                showModal('太棒了！', `
+                    你已經完成這個情境！<br><br>
+                    <strong>${permNotation(scenario.n, scenario.r)} = ${calcStr} = ${result}</strong><br><br>
+                    共有 <strong>${result} 種</strong>不同的排法。<br><br>
+                    記住：${permNotation('n', 'r')} 就是從 n 開始，連續乘 r 個數字！
+                `);
+            }
+        }
+
+        function updateCalculation2() {
+            const scenario = scenarios[activity2State.scenarioIndex];
+            const calc2Display = document.getElementById('calc2Display');
+            if (!calc2Display) return;
+
+            if (activity2State.selectedCandidates.length === 0) {
+                // No calculation to show yet
+                calc2Display.innerHTML = '';
+            } else if (activity2State.selectedCandidates.length === scenario.r) {
+                // Show complete calculation with result
+                const nums = [];
+                for (let i = 0; i < scenario.r; i++) {
+                    nums.push(scenario.n - i);
+                }
+                const calcStr = nums.join(' <span class="operator">×</span> ');
+                const result = nums.reduce((a, b) => a * b, 1);
+
+                if (scenario.type === 'card') {
+                    // For card type (scenario 1), don't show P notation
+                    const html = `${calcStr} <span class="operator">=</span> <span class="result">${result}</span>`;
+                    calc2Display.innerHTML = html;
+                } else {
+                    const html = `${permNotation(scenario.n, scenario.r)} <span class="operator">=</span> ${calcStr} <span class="operator">=</span> <span class="result">${result}</span>`;
+                    calc2Display.innerHTML = html;
+                }
+            } else {
+                // Show partial calculation (numbers selected so far)
+                const nums = [];
+                for (let i = 0; i < activity2State.selectedCandidates.length; i++) {
+                    nums.push(scenario.n - i);
+                }
+                const calcStr = nums.join(' <span class="operator">×</span> ');
+                calc2Display.innerHTML = calcStr;
+            }
+        }
+
+        function loadScenario(index) {
+            const scenario = scenarios[index];
+            activity2State.scenarioIndex = index;
+
+            // Update scenario selector
+            const scenarioSelector = document.getElementById('scenarioSelector');
+            if (scenarioSelector) {
+                scenarioSelector.value = index;
+            }
+
+            // Update instruction
+            const instructionElement = document.getElementById('instruction2');
+            if (instructionElement) {
+                instructionElement.textContent = scenario.title;
+            }
+
+            const candidatesContainer = document.getElementById('candidatesContainer');
+            const rolesContainer = document.getElementById('rolesContainer');
+
+            if (scenario.type === 'card') {
+                // Card-based display (like Activity 1)
+                // Generate cards
+                let cardsHTML = '';
+                for (let i = 1; i <= scenario.n; i++) {
+                    const display = scenario.candidateIcon(i);
+                    cardsHTML += `<div class="card" data-color="${display}" data-id="${i}" draggable="true">${display}</div>`;
+                }
+                if (candidatesContainer) {
+                    candidatesContainer.innerHTML = cardsHTML;
+                }
+
+                // Generate positions
+                let positionsHTML = '';
+                for (let i = 0; i < scenario.r; i++) {
+                    positionsHTML += `
+                        <div class="position" data-position="${i + 1}">
+                            <div class="position-label">${scenario.roles[i]}</div>
+                        </div>
+                    `;
+                }
+                if (rolesContainer) {
+                    rolesContainer.innerHTML = positionsHTML;
+                    rolesContainer.className = 'positions-container';
+                }
+            } else {
+                // Role-based display (original)
+                // Generate candidates
+                let candidatesHTML = '';
+                for (let i = 1; i <= scenario.n; i++) {
+                    const display = scenario.candidateIcon(i);
+                    candidatesHTML += `<div class="candidate" data-id="${i}">${display}</div>`;
+                }
+                if (candidatesContainer) {
+                    candidatesContainer.innerHTML = candidatesHTML;
+                }
+
+                // Generate roles
+                let rolesHTML = '';
+                for (let i = 0; i < scenario.r; i++) {
+                    rolesHTML += `
+                        <div class="role-card" id="role${i + 1}">
+                            <div class="role-title" id="roleTitle${i + 1}">${scenario.roles[i]}</div>
+                            <div class="role-selection" id="roleSelect${i + 1}">?</div>
+                        </div>
+                    `;
+                }
+                if (rolesContainer) {
+                    rolesContainer.innerHTML = rolesHTML;
+                    rolesContainer.className = 'roles-container';
+                }
+            }
+
+            // Clear calculation display
+            const calc2Display = document.getElementById('calc2Display');
+            if (calc2Display) {
+                calc2Display.innerHTML = '';
+            }
+
+            // Update step indicator
+            const step2Element = document.getElementById('step2');
+            if (step2Element) {
+                if (scenario.type === 'card') {
+                    step2Element.innerHTML = `步驟 <span id="currentStep2">1</span> / ${scenario.r}：選擇卡片放到 <span id="currentRole">${scenario.roles[0]}</span>`;
+                } else {
+                    step2Element.innerHTML = `步驟 <span id="currentStep2">1</span> / ${scenario.r}：選擇 <span id="currentRole">${scenario.roles[0]}</span>`;
+                }
+            }
+
+            resetActivity2();
+        }
+
+        function resetActivity2() {
+            const scenario = scenarios[activity2State.scenarioIndex];
+
+            activity2State = {
+                currentRole: 0,
+                selectedCandidates: [],
+                scenarioIndex: activity2State.scenarioIndex
+            };
+
+            if (scenario.type === 'card') {
+                // Reset cards
+                document.querySelectorAll('#activity2 .card').forEach(c => {
+                    c.classList.remove('placed');
+                    c.classList.remove('grabbed');
+                    c.style.border = 'none';
+                });
+                // Clear positions
+                document.querySelectorAll('#activity2 .position').forEach(p => {
+                    p.classList.remove('highlight');
+                    const cards = p.querySelectorAll('.card');
+                    cards.forEach(card => card.remove());
+                });
+                selectedCard2 = null;
+                draggedCard2 = null;
+            } else {
+                // Reset role mode
+                document.querySelectorAll('.candidate').forEach(c => c.classList.remove('selected'));
+                document.querySelectorAll('.role-selection').forEach(r => r.textContent = '?');
+                document.querySelectorAll('.role-card').forEach(r => r.classList.remove('active'));
+
+                const firstRole = document.getElementById('role1');
+                if (firstRole) firstRole.classList.add('active');
+            }
+
+            // Clear calculation display
+            const calc2Display = document.getElementById('calc2Display');
+            if (calc2Display) {
+                calc2Display.innerHTML = '';
+            }
+
+            const step2Element = document.getElementById('step2');
+            if (step2Element) {
+                if (scenario.type === 'card') {
+                    step2Element.innerHTML = `步驟 <span id="currentStep2">1</span> / ${scenario.r}：選擇卡片放到 <span id="currentRole">${scenario.roles[0]}</span>`;
+                } else {
+                    step2Element.innerHTML = `步驟 <span id="currentStep2">1</span> / ${scenario.r}：選擇 <span id="currentRole">${scenario.roles[0]}</span>`;
+                }
+            }
+
+            initActivity2();
+        }
+
+        function changeScenario() {
+            const scenarioSelector = document.getElementById('scenarioSelector');
+            if (scenarioSelector) {
+                const newIndex = parseInt(scenarioSelector.value);
+                loadScenario(newIndex);
+            }
+        }
+
+        // Modal Functions
+        function showModal(title, body) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = body;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Activity 3: Constrained Permutation
+        const scenarios3 = [
+            {
+                title: '某電影院有 5 個座位，小明必須坐在最左邊（座位 1），其餘 4 位朋友可坐在其他位置，有多少種坐法？',
+                constraint: '🎯 限制條件：小明必須坐在座位 1（VIP專座！）',
+                type: 'specific', // Specific position constraint
+                n: 5,
+                positions: 5,
+                candidates: [
+                    { id: 1, label: 'A', special: false },
+                    { id: 2, label: 'B', special: false },
+                    { id: 3, label: 'C', special: false },
+                    { id: 4, label: 'D', special: false },
+                    { id: 5, label: '明', special: false, fixedPosition: 1 }
+                ],
+                positionLabels: (i) => '座位 ' + i,
+                calculateResult: function() {
+                    // 1 way to place 小明 (fixed) × 4! ways to arrange others
+                    const p44 = permNotation(4, 4);
+                    return {
+                        formula: '1 × ' + p44,
+                        calculation: '1 × 4 × 3 × 2 × 1',
+                        result: 24,
+                        explanation: '小明位置固定，其餘 4 人任意排列，共 ' + p44 + ' = 24 種。'
+                    };
+                },
+                explanation: '' // Moved to calculateResult
+            },
+            {
+                title: '有 6 位同學要站成一排拍照，其中小華和小美是好朋友，必須站在一起（相鄰），共有多少種排法？',
+                constraint: '💑 限制條件：小華和小美必須相鄰（強力膠小隊！）',
+                type: 'adjacent', // Adjacent constraint
+                n: 6,
+                positions: 6,
+                candidates: [
+                    { id: 1, label: 'A', special: false },
+                    { id: 2, label: 'B', special: false },
+                    { id: 3, label: 'C', special: false },
+                    { id: 4, label: 'D', special: false },
+                    { id: 5, label: '華', special: false, adjacentWith: 6 },
+                    { id: 6, label: '美', special: false, adjacentWith: 5 }
+                ],
+                positionLabels: (i) => '位置 ' + i,
+                calculateResult: function() {
+                    // Treat 華美 as one unit: 5! × 2
+                    const p55 = permNotation(5, 5);
+                    return {
+                        formula: p55 + ' × 2',
+                        calculation: '(5 × 4 × 3 × 2 × 1) × 2',
+                        result: 240,
+                        explanation: '將小華和小美看作一個整體，與其他 4 人共 5 個單位排列（' + p55 + '），兩人內部可互換位置（×2）。'
+                    };
+                },
+                explanation: '' // Moved to calculateResult
+            },
+            {
+                title: '寵物店需要安排 5 隻寵物（3 隻狗、2 隻貓）排成一排，但 2 隻貓不能相鄰（會打架！），共有多少種安排方法？',
+                constraint: '🐈🐈 限制條件：兩隻貓不能相鄰（保持距離！）',
+                type: 'nonadjacent', // Non-adjacent constraint
+                n: 5,
+                positions: 7, // Pattern: □狗□狗□狗□ (gaps at 1,3,5,7; dogs at 2,4,6)
+                candidates: [
+                    { id: 1, label: '🐕', special: false, type: 'dog', displayName: '狗狗' },
+                    { id: 2, label: '🦮', special: false, type: 'dog', displayName: '導盲犬' },
+                    { id: 3, label: '🐕‍🦺', special: false, type: 'dog', displayName: '服務犬' },
+                    { id: 4, label: '🐈', special: false, type: 'cat', nonadjacentWith: [5], displayName: '貓咪' },
+                    { id: 5, label: '🐈‍⬛', special: false, type: 'cat', nonadjacentWith: [4], displayName: '黑貓' }
+                ],
+                positionLabels: (i) => {
+                    return ''; // No labels for any positions
+                },
+                positionTypes: (i) => {
+                    // Pattern: gap(1) dog(2) gap(3) dog(4) gap(5) dog(6) gap(7)
+                    // Gaps at odd positions (1,3,5,7), dogs at even positions (2,4,6)
+                    if (i === 2 || i === 4 || i === 6) {
+                        return 'dog';
+                    } else {
+                        return 'gap';
+                    }
+                },
+                calculateResult: function() {
+                    // 5 cages, 3 dogs and 2 cats, 2 cats cannot be adjacent
+                    // First arrange 3 dogs: 3! ways
+                    // Then insert 2 cats into 4 gaps (including ends): P(4,2) = 4×3 = 12 ways
+                    // Total: 3! × P(4,2) = 6 × 12 = 72
+                    const p33 = permNotation(3, 3);
+                    const p42 = permNotation(4, 2);
+                    return {
+                        formula: p33 + ' × ' + p42,
+                        calculation: '6 × 12',
+                        result: 72,
+                        explanation: '先排 3 隻狗（' + p33 + ' 種），3 隻狗產生 4 個空隙，將 2 隻貓插入其中確保不相鄰（' + p42 + ' = 12 種）。'
+                    };
+                },
+                explanation: '' // Moved to calculateResult
+            }
+        ];
+
+        let activity3State = {
+            currentStep: 0,
+            placedCandidates: [],
+            scenarioIndex: 0,
+            validPlacement: true
+        };
+
+        function initActivity3() {
+            const scenario = scenarios3[activity3State.scenarioIndex];
+
+            if (scenario.type === 'specific') {
+                // For specific position constraint: click-based interaction
+                const candidates = document.querySelectorAll('#activity3 .candidate');
+                const positions = document.querySelectorAll('#activity3 .position');
+
+                candidates.forEach(candidate => {
+                    candidate.addEventListener('click', handleCandidate3Click);
+                });
+
+                positions.forEach(position => {
+                    position.addEventListener('click', handlePosition3Click);
+                });
+            } else if (scenario.type === 'adjacent') {
+                // For adjacent constraint: drag-and-drop
+                const candidates = document.querySelectorAll('#activity3 .candidate');
+                const positions = document.querySelectorAll('#activity3 .position');
+
+                candidates.forEach(candidate => {
+                    candidate.addEventListener('dragstart', handleCandidate3DragStart);
+                    candidate.addEventListener('click', handleCandidate3Click);
+                });
+
+                positions.forEach(position => {
+                    position.addEventListener('dragover', handlePosition3DragOver);
+                    position.addEventListener('drop', handlePosition3Drop);
+                    position.addEventListener('click', handlePosition3Click);
+                });
+            } else if (scenario.type === 'nonadjacent') {
+                // For non-adjacent constraint: drag-and-drop with validation
+                const candidates = document.querySelectorAll('#activity3 .candidate');
+                const positions = document.querySelectorAll('#activity3 .position');
+
+                candidates.forEach(candidate => {
+                    candidate.addEventListener('dragstart', handleCandidate3DragStart);
+                    candidate.addEventListener('click', handleCandidate3Click);
+                });
+
+                positions.forEach(position => {
+                    position.addEventListener('dragover', handlePosition3DragOver);
+                    position.addEventListener('drop', handlePosition3Drop);
+                    position.addEventListener('click', handlePosition3Click);
+                });
+            }
+        }
+
+        let draggedCandidate3 = null;
+        let selectedCandidate3 = null;
+
+        function handleCandidate3Click(e) {
+            const scenario = scenarios3[activity3State.scenarioIndex];
+            if (e.target.classList.contains('placed')) return;
+
+            // Clear previous selection
+            document.querySelectorAll('#activity3 .candidate').forEach(c => {
+                c.style.border = 'none';
+            });
+
+            selectedCandidate3 = e.target;
+            e.target.style.border = '4px solid var(--accent-2)';
+        }
+
+        function handlePosition3Click(e) {
+            const position = e.target.closest('.position');
+            if (!position) return;
+
+            // Check if clicking on a placed candidate to remove it
+            const placedCandidate = position.querySelector('.placed-candidate');
+            if (placedCandidate) {
+                removeCandidate3FromPosition(position);
+                return;
+            }
+
+            if (!selectedCandidate3) return;
+
+            placeCandidate3(selectedCandidate3, position);
+        }
+
+        function removeCandidate3FromPosition(position) {
+            const positionIndex = parseInt(position.dataset.position);
+
+            // Find the candidate in state
+            const placedIndex = activity3State.placedCandidates.findIndex(p => p.position === positionIndex);
+            if (placedIndex === -1) return;
+
+            const candidateId = activity3State.placedCandidates[placedIndex].candidateId;
+
+            // Remove from state
+            activity3State.placedCandidates.splice(placedIndex, 1);
+            activity3State.currentStep--;
+
+            // Remove visual clone from position
+            const placedCandidate = position.querySelector('.placed-candidate');
+            if (placedCandidate) {
+                placedCandidate.remove();
+            }
+
+            // Re-enable the original candidate
+            const originalCandidate = document.querySelector(`#activity3 .candidate[data-id="${candidateId}"]`);
+            if (originalCandidate) {
+                originalCandidate.classList.remove('placed');
+                originalCandidate.style.opacity = '1';
+            }
+
+            // Update calculation
+            updateCalculation3();
+
+            // Hide check answer button
+            const checkBtn = document.getElementById('checkAnswer3Btn');
+            if (checkBtn) {
+                checkBtn.style.display = 'none';
+            }
+        }
+
+        function handleCandidate3DragStart(e) {
+            if (e.target.classList.contains('placed')) return;
+            draggedCandidate3 = e.target;
+            e.target.style.opacity = '0.5';
+        }
+
+        function handlePosition3DragOver(e) {
+            e.preventDefault();
+        }
+
+        function handlePosition3Drop(e) {
+            e.preventDefault();
+            const position = e.target.closest('.position');
+            if (!position) return;
+            if (!draggedCandidate3) return;
+            if (position.querySelector('.candidate')) return;
+
+            placeCandidate3(draggedCandidate3, position);
+        }
+
+        function placeCandidate3(candidate, position) {
+            const scenario = scenarios3[activity3State.scenarioIndex];
+            const candidateId = parseInt(candidate.dataset.id);
+            const positionIndex = parseInt(position.dataset.position);
+            const candidateData = scenario.candidates.find(c => c.id === candidateId);
+
+            // Validate placement based on constraint type
+            let isValid = true;
+            let errorMessage = '';
+
+            if (scenario.type === 'specific') {
+                // Check if this candidate has a fixed position
+                if (candidateData.fixedPosition && candidateData.fixedPosition !== positionIndex) {
+                    isValid = false;
+                    errorMessage = `${candidateData.label} 必須坐在${scenario.positionLabels(candidateData.fixedPosition)}！`;
+                }
+            } else if (scenario.type === 'adjacent') {
+                // For adjacent constraint, we need to check after placement
+                // Will validate when all are placed
+            } else if (scenario.type === 'nonadjacent') {
+                // No real-time validation for nonadjacent - let user arrange freely
+                // Will check when they click "查看答案"
+            }
+
+            if (!isValid) {
+                // Show error feedback
+                showErrorFeedback(errorMessage);
+                candidate.style.opacity = '1';
+                candidate.style.border = 'none';
+                selectedCandidate3 = null;
+                draggedCandidate3 = null;
+                return;
+            }
+
+            // Mark candidate as placed
+            candidate.classList.add('placed');
+            candidate.style.opacity = '0.3';
+            candidate.style.border = 'none';
+
+            // Create a clone in the position
+            const clone = candidate.cloneNode(true);
+
+            // Preserve the original background gradient
+            const candidateStyle = window.getComputedStyle(candidate);
+            const background = candidateStyle.backgroundImage;
+
+            clone.style.background = background;
+            clone.style.opacity = '1';
+            clone.style.margin = '0 auto';
+            clone.style.cursor = 'pointer';
+            clone.draggable = false;
+            clone.classList.remove('candidate');
+            clone.classList.add('placed-candidate');
+
+            // For non-round display in positions - optimized for beauty
+            clone.style.width = '60px';
+            clone.style.height = '60px';
+            clone.style.borderRadius = '50%';
+            clone.style.fontSize = '24px';
+            clone.style.display = 'flex';
+            clone.style.alignItems = 'center';
+            clone.style.justifyContent = 'center';
+            clone.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+
+            // Insert before label, centered
+            const positionLabel = position.querySelector('.position-label');
+            if (positionLabel) {
+                positionLabel.before(clone);
+            } else {
+                // If no label (like in scenario 3), just append to position
+                position.appendChild(clone);
+            }
+
+            // Update state
+            activity3State.placedCandidates.push({
+                candidateId: candidateId,
+                position: positionIndex,
+                label: candidateData.label
+            });
+            activity3State.currentStep++;
+
+            // Clear selection
+            selectedCandidate3 = null;
+            draggedCandidate3 = null;
+
+            // Update calculation
+            updateCalculation3();
+
+            // Check if complete
+            if (activity3State.currentStep === scenario.candidates.length) {
+                // Show check answer button instead of auto-showing result
+                const checkBtn = document.getElementById('checkAnswer3Btn');
+                if (checkBtn) {
+                    checkBtn.style.display = 'inline-block';
+                }
+            }
+        }
+
+        function showErrorFeedback(message) {
+            const calc3Display = document.getElementById('calc3Display');
+            if (calc3Display) {
+                const originalHTML = calc3Display.innerHTML;
+                calc3Display.innerHTML = `<span style="color: var(--accent-4);">❌ ${message}</span>`;
+
+                setTimeout(() => {
+                    calc3Display.innerHTML = originalHTML;
+                }, 2000);
+            }
+        }
+
+        function checkAnswer3() {
+            const scenario = scenarios3[activity3State.scenarioIndex];
+            let isValid = true;
+            let errorMessage = '';
+
+            if (scenario.type === 'adjacent') {
+                // Check if 華 and 美 are adjacent
+                const candidate5 = activity3State.placedCandidates.find(p => p.candidateId === 5);
+                const candidate6 = activity3State.placedCandidates.find(p => p.candidateId === 6);
+
+                if (candidate5 && candidate6) {
+                    const diff = Math.abs(candidate5.position - candidate6.position);
+                    if (diff !== 1) {
+                        isValid = false;
+                        errorMessage = '小華和小美必須相鄰！請重新安排。';
+                    }
+                }
+            } else if (scenario.type === 'nonadjacent') {
+                // Check if dogs are in dog positions and cats are in gap positions
+                for (const placed of activity3State.placedCandidates) {
+                    const candidateData = scenario.candidates.find(c => c.id === placed.candidateId);
+                    const positionType = scenario.positionTypes ? scenario.positionTypes(placed.position) : 'normal';
+
+                    if (candidateData.type === 'dog' && positionType !== 'dog') {
+                        isValid = false;
+                        errorMessage = '排列不正確！請重新思考狗狗和貓咪的位置安排。';
+                        break;
+                    } else if (candidateData.type === 'cat' && positionType !== 'gap') {
+                        isValid = false;
+                        errorMessage = '排列不正確！請重新思考狗狗和貓咪的位置安排。';
+                        break;
+                    }
+                }
+
+                // Additionally check if two cats are adjacent
+                if (isValid) {
+                    const catPositions = activity3State.placedCandidates
+                        .filter(p => {
+                            const candidateData = scenario.candidates.find(c => c.id === p.candidateId);
+                            return candidateData && candidateData.type === 'cat';
+                        })
+                        .map(p => p.position)
+                        .sort((a, b) => a - b);
+
+                    // Check if any two cats are adjacent
+                    for (let i = 0; i < catPositions.length - 1; i++) {
+                        if (catPositions[i + 1] - catPositions[i] === 1) {
+                            isValid = false;
+                            errorMessage = '兩隻貓不能相鄰！請重新安排。';
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!isValid) {
+                showErrorFeedback(errorMessage);
+                return;
+            }
+
+            // Calculate result
+            const resultData = scenario.calculateResult();
+
+            // Build modal content without template literals to avoid encoding issues
+            const modalContent = '<strong>' + resultData.formula + ' = ' + resultData.result + '</strong><br><br>' + resultData.explanation;
+
+            showModal('太棒了！', modalContent);
+        }
+
+        function updateCalculation3() {
+            const scenario = scenarios3[activity3State.scenarioIndex];
+            const calc3Display = document.getElementById('calc3Display');
+            if (!calc3Display) return;
+
+            if (activity3State.currentStep === 0) {
+                calc3Display.innerHTML = '';
+            } else if (activity3State.currentStep === scenario.candidates.length) {
+                calc3Display.innerHTML = '✅ 已完成安排！';
+            } else {
+                // Show progress
+                calc3Display.innerHTML = `已安排 ${activity3State.currentStep} / ${scenario.candidates.length}`;
+            }
+        }
+
+        function loadScenario3(index) {
+            const scenario = scenarios3[index];
+            activity3State.scenarioIndex = index;
+
+            // Update selector
+            const selector = document.getElementById('scenario3Selector');
+            if (selector) {
+                selector.value = index;
+            }
+
+            // Update instruction
+            const instruction = document.getElementById('instruction3');
+            if (instruction) {
+                instruction.textContent = scenario.title;
+            }
+
+            // Update constraint info
+            const constraintInfo = document.getElementById('constraintInfo');
+            if (constraintInfo) {
+                constraintInfo.innerHTML = scenario.constraint;
+            }
+
+            // Generate candidates HTML
+            const candidatesContainer = document.getElementById('candidates3Container');
+            if (candidatesContainer) {
+                let candidatesHTML = '';
+                scenario.candidates.forEach(c => {
+                    let style = '';
+                    // Different colors for different pets in scenario 3
+                    if (scenario.type === 'nonadjacent') {
+                        if (c.label === '🐕') {
+                            style = 'background: linear-gradient(135deg, #f59e0b, #d97706);'; // Orange
+                        } else if (c.label === '🦮') {
+                            style = 'background: linear-gradient(135deg, #3b82f6, #2563eb);'; // Blue
+                        } else if (c.label === '🐕‍🦺') {
+                            style = 'background: linear-gradient(135deg, #10b981, #059669);'; // Green
+                        } else if (c.label === '🐈') {
+                            style = 'background: linear-gradient(135deg, #ec4899, #db2777);'; // Pink
+                        } else if (c.label === '🐈‍⬛') {
+                            style = 'background: linear-gradient(135deg, #8b5cf6, #7c3aed);'; // Purple
+                        }
+                    } else if (c.special) {
+                        style = 'background: linear-gradient(135deg, #f59e0b, #d97706);';
+                    }
+                    candidatesHTML += `<div class="candidate" data-id="${c.id}" draggable="true" style="${style}">${c.label}</div>`;
+                });
+                candidatesContainer.innerHTML = candidatesHTML;
+            }
+
+            // Generate positions HTML
+            const positionsContainer = document.getElementById('positions3Container');
+            if (positionsContainer) {
+                let positionsHTML = '';
+                for (let i = 1; i <= scenario.positions; i++) {
+                    let specialStyle = '';
+                    let positionClass = 'position';
+
+                    // Highlight special positions
+                    if (scenario.type === 'nonadjacent' && scenario.positionTypes) {
+                        // For gap positions in nonadjacent scenario
+                        if (scenario.positionTypes(i) === 'gap') {
+                            specialStyle = 'border-color: var(--accent-1); background: rgba(14, 165, 233, 0.1);';
+                        }
+                    }
+
+                    const labelText = scenario.positionLabels(i);
+                    positionsHTML += `
+                        <div class="${positionClass}" data-position="${i}" data-type="${scenario.positionTypes ? scenario.positionTypes(i) : 'normal'}" style="${specialStyle}">
+                            ${labelText ? '<div class="position-label">' + labelText + '</div>' : ''}
+                        </div>
+                    `;
+                }
+                positionsContainer.innerHTML = positionsHTML;
+            }
+
+            resetActivity3();
+        }
+
+        function resetActivity3() {
+            const scenario = scenarios3[activity3State.scenarioIndex];
+
+            activity3State = {
+                currentStep: 0,
+                placedCandidates: [],
+                scenarioIndex: activity3State.scenarioIndex,
+                validPlacement: true
+            };
+
+            // Reset candidates
+            document.querySelectorAll('#activity3 .candidate').forEach(c => {
+                c.classList.remove('placed');
+                c.style.opacity = '1';
+                c.style.border = 'none';
+            });
+
+            // Clear positions
+            document.querySelectorAll('#activity3 .position').forEach(p => {
+                const placedCandidates = p.querySelectorAll('.placed-candidate');
+                placedCandidates.forEach(pc => pc.remove());
+            });
+
+            // Clear calculation
+            const calc3Display = document.getElementById('calc3Display');
+            if (calc3Display) {
+                calc3Display.innerHTML = '';
+            }
+
+            // Hide check answer button
+            const checkBtn = document.getElementById('checkAnswer3Btn');
+            if (checkBtn) {
+                checkBtn.style.display = 'none';
+            }
+
+            selectedCandidate3 = null;
+            draggedCandidate3 = null;
+
+            initActivity3();
+        }
+
+        function changeScenario3() {
+            const selector = document.getElementById('scenario3Selector');
+            if (selector) {
+                const newIndex = parseInt(selector.value);
+                loadScenario3(newIndex);
+            }
+        }
+
+        // Initialize
+        initActivity1();
+        loadScenario(0);
+        loadScenario3(0);
+    </script>
+</body>
+</html>
+
